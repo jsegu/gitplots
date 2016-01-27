@@ -66,28 +66,45 @@ def get_date_counts_dataframe(gitroot):
     return df
 
 
+def get_date_counts_multidataframe(gitroot):
+    """Return dates with commits and commit frequency for each subsubdirectory
+    of each subdirectory of the given directory in a pandas multi-indexed
+    dataframe."""
+
+    # find all subdirectories
+    subdirs = os.listdir(gitroot)
+    subdirs.sort()
+    subdirpaths = [os.path.join(gitroot, d) for d in subdirs]
+
+    # combined date counts series in dataframe
+    df = pd.concat([get_date_counts_dataframe(d) for d in subdirpaths],
+                   axis=1, keys=subdirs)
+
+    # return resulting dataframe
+    return df
+
+
 def main():
     """Plot stacked commit frequency for each category."""
 
-    # initialize figure
-    fig, grid = plt.subplots(3, 1, sharex=True)
-
-    # git root and categories to plot
+    # git root
     gitroot = '/home/juliens/git/'
-    subdirs = ['code', 'papers', 'perso']
-    subdirs = [os.path.join(gitroot, d) for d in subdirs]
 
     # other properties
     cmaps = ['Blues', 'Reds', 'Greens']
 
-    # plot counts from each category
-    for i, d in enumerate(subdirs):
-        df = get_date_counts_dataframe(d)
-        df = df.resample('1M', how='sum')
-        df.plot(ax=grid[i], kind='area', cmap=cmaps[i])
+    # get commit counts
+    df = get_date_counts_multidataframe(gitroot)
+    df = df.resample('1M', how='sum')
 
-    # set axes properties
-    for ax in grid:
+    # initialize figure
+    categories = df.columns.get_level_values(0).unique()
+    fig, grid = plt.subplots(len(categories), 1, sharex=True)
+
+    # plot counts from each category
+    for i, cat in enumerate(categories):
+        ax = grid[i]
+        df[cat].plot(ax=ax, kind='area', cmap=cmaps[i])
         ax.set_ylabel('commits')
         ax.set_xlabel('date')
         ax.set_xlim('2012-01-01', '2016-01-01')
