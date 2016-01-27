@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 """Plots from git logs."""
 
@@ -25,7 +25,11 @@ def get_date_counts(gitdir):
 
     # convert to dates and count commits per date
     dates = map(datetime.date.fromtimestamp, timestamps)
-    dates, counts = np.unique(dates, return_counts=True)
+    try:  # faster but requires Numpy >= 1.9.0
+        dates, counts = np.unique(dates, return_counts=True)
+    except TypeError:  # works with Numpy < 1.9.0
+        dates, counts = np.unique(dates, return_inverse=True)
+        counts = np.bincount(counts)
 
     # return dates with commits and commit counts
     return dates, counts
