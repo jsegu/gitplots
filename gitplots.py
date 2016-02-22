@@ -97,6 +97,7 @@ def plot_area(df):
         df[cat].plot(ax=ax, kind='area', cmap=cmap_cycle[i])
         ax.set_ylabel('commits')
         ax.set_xlabel('date')
+        ax.legend(loc='upper left').get_frame().set_alpha(0.5)
 
     # return entire figure
     return fig
