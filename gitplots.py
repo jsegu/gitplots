@@ -108,13 +108,18 @@ def main():
     # git root
     gitroot = '/home/juliens/git/'
 
+    # time spans and frequencies for plots
+    today = pd.to_datetime('today')
+    freqs = {'lt': '1M', 'mt': '1W', 'st': '1D'}
+
     # get commit counts
     df = get_date_counts_multidataframe(gitroot)
-    df = df.resample('1M', how='sum')
 
     # plot
-    fig = plot_area(df)
-    fig.savefig('gitplots')
+    for term in ['lt', 'mt', 'st']:
+        subdf = df.resample(freqs[term], how='sum').tail(50)
+        plot_area(subdf).savefig('gitplot_area_%s' % term)
+
 
 if __name__ == '__main__':
     main()
