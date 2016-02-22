@@ -10,7 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')
-plt.rc('figure', figsize=(12, 9))
+cmap_cycle = ['Blues', 'Reds', 'Greens', 'Purples', 'Oranges', 'Greys']
 
 
 def get_date_counts(gitdir):
@@ -84,18 +84,8 @@ def get_date_counts_multidataframe(gitroot):
     return df
 
 
-def main():
+def plot_area(df):
     """Plot stacked commit frequency for each category."""
-
-    # git root
-    gitroot = '/home/juliens/git/'
-
-    # other properties
-    cmaps = ['Blues', 'Reds', 'Greens']
-
-    # get commit counts
-    df = get_date_counts_multidataframe(gitroot)
-    df = df.resample('1M', how='sum')
 
     # initialize figure
     categories = df.columns.get_level_values(0).unique()
@@ -104,12 +94,26 @@ def main():
     # plot counts from each category
     for i, cat in enumerate(categories):
         ax = grid[i]
-        df[cat].plot(ax=ax, kind='area', cmap=cmaps[i])
+        df[cat].plot(ax=ax, kind='area', cmap=cmap_cycle[i])
         ax.set_ylabel('commits')
         ax.set_xlabel('date')
-        ax.set_xlim('2012-01-01', '2016-01-01')
 
-    # save
+    # return entire figure
+    return fig
+
+
+def main():
+    """Main function called upon execution."""
+
+    # git root
+    gitroot = '/home/juliens/git/'
+
+    # get commit counts
+    df = get_date_counts_multidataframe(gitroot)
+    df = df.resample('1M', how='sum')
+
+    # plot
+    fig = plot_area(df)
     fig.savefig('gitplots')
 
 if __name__ == '__main__':
