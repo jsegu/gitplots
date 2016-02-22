@@ -103,6 +103,28 @@ def plot_area(df):
     return fig
 
 
+def plot_pies(df):
+    """Plot pie chart of commit frequency for each category."""
+
+    # initialize figure
+    categories = df.columns.get_level_values(0).unique()
+    fig, grid = plt.subplots(1, len(categories), sharex=True)
+
+    # plot counts from each category
+    for i, cat in enumerate(categories):
+        ax = grid[i]
+        ax.set_aspect('equal')
+        df[cat].sum().plot(ax=ax, kind='pie', cmap=cmap_cycle[i],
+                           startangle=90, autopct='%.1f%%',
+                           labeldistance=99, legend=True)
+        ax.set_ylabel('')
+        ax.set_title(cat)
+        ax.legend(loc='upper left').get_frame().set_alpha(0.5)
+
+    # return entire figure
+    return fig
+
+
 def main():
     """Main function called upon execution."""
 
@@ -120,6 +142,7 @@ def main():
     for term in ['lt', 'mt', 'st']:
         subdf = df.resample(freqs[term], how='sum').tail(50)
         plot_area(subdf).savefig('gitplot_area_%s' % term)
+        plot_pies(subdf).savefig('gitplot_pies_%s' % term)
 
 
 if __name__ == '__main__':
