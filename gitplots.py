@@ -94,10 +94,12 @@ def plot_area(df):
     # plot counts from each category
     for i, cat in enumerate(categories):
         ax = grid[i]
-        df[cat].plot(ax=ax, kind='area', cmap=cmap_cycle[i])
         ax.set_ylabel('commits')
         ax.set_xlabel('date')
-        ax.legend(loc='upper left').get_frame().set_alpha(0.5)
+        commits = df[cat].dropna(axis=1, how='all')
+        if not commits.empty:
+            commits.plot(ax=ax, kind='area', cmap=cmap_cycle[i])
+            ax.legend(loc='upper left').get_frame().set_alpha(0.5)
 
     # return entire figure
     return fig
