@@ -117,11 +117,12 @@ def plot_pies(df):
         ax = grid[i]
         ax.set_aspect('equal')
         df[cat].sum().plot(ax=ax, kind='pie', cmap=cmap_cycle[i],
-                           startangle=90, autopct='%.1f%%',
-                           labeldistance=99, legend=True)
+                               startangle=90, autopct='%.1f%%',
+                               labeldistance=99, legend=False)
         ax.set_ylabel('')
         ax.set_title(cat)
-        ax.legend(loc='upper left').get_frame().set_alpha(0.5)
+        if ax.get_legend_handles_labels() != ([], []):
+            ax.legend(loc='upper left').get_frame().set_alpha(0.5)
 
     # return entire figure
     return fig
