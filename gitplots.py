@@ -140,7 +140,7 @@ def main():
 
     # plot
     for term in ['lt', 'mt', 'st']:
-        subdf = df.resample(freqs[term], how='sum').tail(50)
+        subdf = df.resample(freqs[term]).sum().tail(50)
         plot_area(subdf).savefig('gitplot_area_%s' % term)
         plot_pies(subdf).savefig('gitplot_pies_%s' % term)
 
