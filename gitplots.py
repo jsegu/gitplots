@@ -66,14 +66,15 @@ def get_date_counts_dataframe(gitroot):
     return df
 
 
-def get_date_counts_multidataframe(gitroot):
+def get_date_counts_multidataframe(gitroot, subdirs=None):
     """Return dates with commits and commit frequency for each subsubdirectory
     of each subdirectory of the given directory in a pandas multi-indexed
     dataframe."""
 
     # find all subdirectories
-    subdirs = os.listdir(gitroot)
-    subdirs.sort()
+    if subdirs is None:
+        subdirs = os.listdir(gitroot)
+        subdirs.sort()
     subdirpaths = [os.path.join(gitroot, d) for d in subdirs]
 
     # combined date counts series in dataframe
@@ -133,13 +134,14 @@ def main():
 
     # git root
     gitroot = '/home/juliens/git/'
+    subdirs = ['code', 'research', 'perso']
 
     # time spans and frequencies for plots
     today = pd.to_datetime('today')
     freqs = {'lt': '1M', 'mt': '1W', 'st': '1D'}
 
     # get commit counts
-    df = get_date_counts_multidataframe(gitroot)
+    df = get_date_counts_multidataframe(gitroot, subdirs)
 
     # plot
     for term in ['lt', 'mt', 'st']:
