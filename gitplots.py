@@ -10,7 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')
-cmap_cycle = ['Blues', 'Reds', 'Greens', 'Purples', 'Oranges', 'Greys']
+cmap_cycle = ['Blues', 'Oranges', 'Greens', 'Reds', 'Purples', 'Greys']
 
 
 def get_date_counts(gitdir):

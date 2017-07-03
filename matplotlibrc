@@ -1,12 +1,8 @@
 # matplotlib configuration parameters
 
 ### FIGURE
-figure.figsize          : 16.0, 12.0
+figure.figsize          : 12.0, 9.0
 figure.subplot.left     : 0.0625  #     1/16
 figure.subplot.right    : 0.9375  # 1 - 1/16
 figure.subplot.bottom   : 0.0833  #     1/12
 figure.subplot.top      : 0.9166  # 1 - 1/12
-
-### SAVING FIGURES
-savefig.dpi             : 100     # figure dots per inch
-savefig.format          : png     # png, ps, pdf, svg
