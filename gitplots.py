@@ -134,15 +134,14 @@ def main():
     """Main function called upon execution."""
 
     # git root
-    gitroot = '/home/juliens/git/'
-    subdirs = ['code', 'research', 'perso']
+    gitroot = os.path.expanduser('~/git')
 
     # time spans and frequencies for plots
     today = pd.to_datetime('today')
     freqs = {'lt': '1M', 'mt': '1W', 'st': '1D'}
 
     # get commit counts
-    df = get_date_counts_multidataframe(gitroot, subdirs)
+    df = get_date_counts_multidataframe(gitroot)
 
     # plot
     for term in ['lt', 'mt', 'st']:
