@@ -58,6 +58,7 @@ def get_date_counts_dataframe(gitroot):
     subdirs = os.listdir(gitroot)
     subdirs.sort()
     subdirs = [os.path.join(gitroot, d) for d in subdirs]
+    subdirs = [d for d in subdirs if os.path.isdir(d)]
 
     # combined date counts series in dataframe
     df = pd.concat([get_date_counts_series(d) for d in subdirs], axis=1)
