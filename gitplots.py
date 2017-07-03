@@ -18,7 +18,7 @@ def get_date_counts(gitdir):
     from given git repository."""
 
     # get timestamps using git log
-    cmd = 'git --git-dir=%s log --format=%%at' % gitdir
+    cmd = 'git -C %s log --format=%%at' % gitdir
     timestamps = subprocess.check_output(cmd.split(' '))
     timestamps = timestamps.split('\n')[:-1]
     timestamps = map(int, timestamps)
