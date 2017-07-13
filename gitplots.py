@@ -91,6 +91,35 @@ def get_date_counts_multidataframe(gitroot, subdirs=None):
     return df
 
 
+def get_random_dataframe():
+    """Return random dates and commit frequency in a pandas dataframe."""
+
+    # generate random data
+    numdirs = np.random.randint(2, 7)
+    subdirs = ['repo{}'.format(i+1) for i in range(numdirs)]
+    dates = pd.date_range('2001-01-01', '2006-12-31')
+    counts = np.random.rand(len(dates), len(subdirs))
+    counts = (1/counts).astype(int)
+    df = pd.DataFrame(columns=subdirs, index=dates, data=counts)
+
+    # return resulting dataframe
+    return df
+
+
+def get_random_multidataframe():
+    """Return dates and commit frequency in a pandas multi-indexed
+    dataframe."""
+
+    # concatenate random data
+    numdirs = np.random.randint(2, 7)
+    subdirs = ['cat{}'.format(i+1) for i in range(numdirs)]
+    df = pd.concat([get_random_dataframe() for d in subdirs],
+                   axis=1, keys=subdirs)
+
+    # return resulting dataframe
+    return df
+
+
 def plot_area(df):
     """Plot stacked commit frequency for each category."""
 
@@ -124,8 +153,8 @@ def plot_pies(df):
         ax = grid.flat[i]
         ax.set_aspect('equal')
         df[cat].sum().plot(ax=ax, kind='pie', cmap=cmap_cycle[i],
-                               startangle=90, autopct='%.1f%%',
-                               labeldistance=99, legend=False)
+                           startangle=90, autopct='%.1f%%',
+                           labeldistance=99, legend=False)
         ax.set_ylabel('')
         ax.set_title(cat)
         if ax.get_legend_handles_labels() != ([], []):
@@ -141,9 +170,11 @@ if __name__ == '__main__':
     parser.add_argument('-g', '--gitroot', metavar='DIR', default='~/git',
                         help="""directory containing git repositories
                                 (default: %(default)s)""")
-    parser.add_argument('-s', '--subdirs', metavar='DIR', default=None, nargs='+',
+    parser.add_argument('-s', '--subdirs', metavar='DIR', nargs='+',
                         help="""subdirectories (categories) to plot
                                 (default: all)""")
+    parser.add_argument('-t', '--test', action='store_true',
+                        help="""generate random commit history""")
     args = parser.parse_args()
 
     # git root
@@ -151,11 +182,13 @@ if __name__ == '__main__':
     subdirs = args.subdirs
 
     # time spans and frequencies for plots
-    today = pd.to_datetime('today')
     freqs = {'lt': '1M', 'mt': '1W', 'st': '1D'}
 
     # get commit counts
-    df = get_date_counts_multidataframe(gitroot, subdirs=subdirs)
+    if args.test is True:
+        df = get_random_multidataframe()
+    else:
+        df = get_date_counts_multidataframe(gitroot, subdirs=subdirs)
 
     # plot
     for term in ['lt', 'mt', 'st']:
