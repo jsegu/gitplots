@@ -92,11 +92,11 @@ def plot_area(df):
 
     # initialize figure
     categories = df.columns.get_level_values(0).unique()
-    fig, grid = plt.subplots(len(categories), 1, sharex=True)
+    fig, grid = plt.subplots(len(categories), 1, sharex=True, squeeze=False)
 
     # plot counts from each category
     for i, cat in enumerate(categories):
-        ax = grid[i]
+        ax = grid.flat[i]
         ax.set_ylabel('commits')
         ax.set_xlabel('date')
         commits = df[cat].dropna(axis=1, how='all')
@@ -113,11 +113,11 @@ def plot_pies(df):
 
     # initialize figure
     categories = df.columns.get_level_values(0).unique()
-    fig, grid = plt.subplots(1, len(categories), sharex=True)
+    fig, grid = plt.subplots(1, len(categories), sharex=True, squeeze=False)
 
     # plot counts from each category
     for i, cat in enumerate(categories):
-        ax = grid[i]
+        ax = grid.flat[i]
         ax.set_aspect('equal')
         df[cat].sum().plot(ax=ax, kind='pie', cmap=cmap_cycle[i],
                                startangle=90, autopct='%.1f%%',
