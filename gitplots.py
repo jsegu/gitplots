@@ -3,6 +3,7 @@
 """Plots from git logs."""
 
 import os
+import argparse
 import datetime
 import subprocess
 import numpy as np
@@ -130,25 +131,30 @@ def plot_pies(df):
     return fig
 
 
-def main():
-    """Main function called upon execution."""
+if __name__ == '__main__':
+    """Main program called upon execution."""
+    parser = argparse.ArgumentParser(description='Plots from git logs.')
+    parser.add_argument('-g', '--gitroot', metavar='DIR', default='~/git',
+                        help="""directory containing git repositories
+                                (default: %(default)s)""")
+    parser.add_argument('-s', '--subdirs', metavar='DIR', default=None, nargs='+',
+                        help="""subdirectories (categories) to plot
+                                (default: all)""")
+    args = parser.parse_args()
 
     # git root
-    gitroot = os.path.expanduser('~/git')
+    gitroot = os.path.expanduser(args.gitroot)
+    subdirs = args.subdirs
 
     # time spans and frequencies for plots
     today = pd.to_datetime('today')
     freqs = {'lt': '1M', 'mt': '1W', 'st': '1D'}
 
     # get commit counts
-    df = get_date_counts_multidataframe(gitroot)
+    df = get_date_counts_multidataframe(gitroot, subdirs=subdirs)
 
     # plot
     for term in ['lt', 'mt', 'st']:
         subdf = df.resample(freqs[term]).sum().tail(50)
         plot_area(subdf).savefig('gitplot_area_%s' % term)
         plot_pies(subdf).savefig('gitplot_pies_%s' % term)
-
-
-if __name__ == '__main__':
-    main()
