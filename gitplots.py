@@ -14,6 +14,14 @@ plt.style.use('ggplot')
 cmap_cycle = ['Blues', 'Oranges', 'Greens', 'Reds', 'Purples', 'Greys']
 
 
+def is_git_repo(directory):
+    """Check if directory is a git repository."""
+    cmd = ['git', '-C', directory, 'log', '-0']
+    with open(os.devnull, 'w') as null:
+        code = subprocess.call(cmd, stdout=null, stderr=null)
+    return code == 0
+
+
 def get_date_counts(gitdir):
     """Return dates with at least one commit and corresponding commit freqency
     from given git repository."""
@@ -55,15 +63,12 @@ def get_date_counts_dataframe(gitroot):
     """Return dates with commits and commit frequency for each subdirectory of
     given directory in a pandas dataframe."""
 
-    # find all subdirectories
+    # find all git repositories
     subdirs = os.listdir(gitroot)
     subdirs.sort()
     subdirs = [os.path.join(gitroot, d) for d in subdirs]
     subdirs = [d for d in subdirs if os.path.isdir(d)]
-
-    # select git repos with at least one commit
-    cmd = 'git -C {} log -1 &> /dev/null'
-    subdirs = [d for d in subdirs if os.system(cmd.format(d)) == 0]
+    subdirs = [d for d in subdirs if is_git_repo(d)]
 
     # combined date counts series in dataframe
     df = pd.concat([get_date_counts_series(d) for d in subdirs], axis=1)
