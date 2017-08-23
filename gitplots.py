@@ -175,6 +175,9 @@ if __name__ == '__main__':
     parser.add_argument('-g', '--gitroot', metavar='DIR', default='~/git',
                         help="""directory containing git repositories
                                 (default: %(default)s)""")
+    parser.add_argument('-p', '--plotdir', metavar='DIR', default='.',
+                        help="""directory where to save plots
+                                (default: %(default)s)""")
     parser.add_argument('-s', '--subdirs', metavar='DIR', nargs='+',
                         help="""subdirectories (categories) to plot
                                 (default: all)""")
@@ -182,9 +185,13 @@ if __name__ == '__main__':
                         help="""generate random commit history""")
     args = parser.parse_args()
 
-    # git root
+    # paths to directories
     gitroot = os.path.expanduser(args.gitroot)
+    plotdir = os.path.expanduser(args.plotdir)
     subdirs = args.subdirs
+
+    # output prefix
+    prefix = os.path.join(plotdir, 'gitplot_')
 
     # time spans and frequencies for plots
     freqs = {'lt': '1M', 'mt': '1W', 'st': '1D'}
@@ -198,5 +205,5 @@ if __name__ == '__main__':
     # plot
     for term in ['lt', 'mt', 'st']:
         subdf = df.resample(freqs[term]).sum().tail(50)
-        plot_area(subdf).savefig('gitplot_area_%s' % term)
-        plot_pies(subdf).savefig('gitplot_pies_%s' % term)
+        plot_area(subdf).savefig(prefix + 'area_%s' % term)
+        plot_pies(subdf).savefig(prefix + 'pies_%s' % term)
