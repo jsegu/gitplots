@@ -1,9 +1,0 @@
-# Copyright (c) 2015--2018, Julien Seguinot <seguinot@vaw.baug.ethz.ch>
-# GNU General Public License v3.0+ (https://www.gnu.org/licenses/gpl-3.0.txt)
-
-# gitplots custom figure size
-figure.figsize          : 12.0, 9.0
-figure.subplot.left     : 0.0625  #     1/16
-figure.subplot.right    : 0.9375  # 1 - 1/16
-figure.subplot.bottom   : 0.0833  #     1/12
-figure.subplot.top      : 0.9166  # 1 - 1/12

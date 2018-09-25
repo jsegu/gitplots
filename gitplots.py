@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 
 # FIXME make these command-line options
 plt.style.use('ggplot')
+plt.rc('figure', figsize=(12.0, 9.0))
+plt.rc('figure.subplot', left=0.0625, right=0.9375, bottom=0.0833, top=0.9166)
 CMAP_CYCLE = ['Blues', 'Oranges', 'Greens', 'Reds', 'Purples', 'Greys']
 
 
