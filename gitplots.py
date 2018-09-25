@@ -3,15 +3,15 @@
 """Plots from git logs."""
 
 import os
-import argparse
 import datetime
 import subprocess
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# FIXME make these command-line options
 plt.style.use('ggplot')
-cmap_cycle = ['Blues', 'Oranges', 'Greens', 'Reds', 'Purples', 'Greys']
+CMAP_CYCLE = ['Blues', 'Oranges', 'Greens', 'Reds', 'Purples', 'Greys']
 
 
 def is_git_repo(directory):
@@ -53,10 +53,10 @@ def get_date_counts_series(gitdir):
 
     # convert to pandas dataseries
     dates = pd.DatetimeIndex(dates)
-    ds = pd.Series(data=counts, index=dates, name=os.path.basename(gitdir))
+    counts = pd.Series(data=counts, index=dates, name=os.path.basename(gitdir))
 
     # return data series
-    return ds
+    return counts
 
 
 def get_date_counts_dataframe(gitroot):
@@ -139,7 +139,7 @@ def plot_area(df):
         ax.set_xlabel('date')
         commits = df[cat].dropna(axis=1, how='all')
         if not commits.empty:
-            commits.plot(ax=ax, kind='area', cmap=cmap_cycle[i])
+            commits.plot(ax=ax, kind='area', cmap=CMAP_CYCLE[i])
             ax.legend(loc='upper left').get_frame().set_alpha(0.5)
 
     # return entire figure
@@ -157,7 +157,7 @@ def plot_pies(df):
     for i, cat in enumerate(categories):
         ax = grid.flat[i]
         ax.set_aspect('equal')
-        df[cat].sum().plot(ax=ax, kind='pie', cmap=cmap_cycle[i],
+        df[cat].sum().plot(ax=ax, kind='pie', cmap=CMAP_CYCLE[i],
                            startangle=90, autopct='%.1f%%',
                            labeldistance=99, legend=False)
         ax.set_ylabel('')
@@ -169,8 +169,11 @@ def plot_pies(df):
     return fig
 
 
-if __name__ == '__main__':
+def main():
     """Main program called upon execution."""
+
+    import argparse
+
     parser = argparse.ArgumentParser(description='Plots from git logs.')
     parser.add_argument('-g', '--gitroot', metavar='DIR', default='~/git',
                         help="""directory containing git repositories
@@ -207,3 +210,7 @@ if __name__ == '__main__':
         subdf = df.resample(freqs[term]).sum().tail(50)
         plot_area(subdf).savefig(prefix + 'area_%s' % term)
         plot_pies(subdf).savefig(prefix + 'pies_%s' % term)
+
+
+if __name__ == '__main__':
+    main()
