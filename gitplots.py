@@ -90,8 +90,8 @@ def get_date_counts_multidataframe(gitroot, subdirs=None):
 
     # find all subdirectories
     if subdirs is None:
-        subdirs = os.listdir(gitroot)
-        subdirs.sort()
+        subdirs = sorted([f for f in os.listdir(gitroot)
+                          if os.path.isdir(os.path.join(gitroot, f))])
     subdirpaths = [os.path.join(gitroot, d) for d in subdirs]
 
     # combined date counts series in dataframe
